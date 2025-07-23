@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pydantic
+mlflow
+pymongo
+qdrant-client
+sentence-transformers

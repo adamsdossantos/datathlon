@@ -1,0 +1,205 @@
+# Interview Configuration for Cultural Fit and Engagement Assessment
+interview_config:  
+  # General interview settings
+  settings:
+    max_duration_minutes: 15
+    max_follow_up_questions: 2
+    require_specific_examples: true
+    conversation_style: "friendly_professional"
+    language: "portuguese"
+    
+  # Opening and closing messages
+  messages:
+    opening: >
+      "Olá! Obrigado pela disponibilidade de tempo para conversarmos hoje. 
+      Estou aqui para aprender sobre você e discutir sobre uma oportunidade em nossa empresa. 
+      Essa conversa levará entre 10 e 15 minutos. Vamos começar?"
+    
+    closing: >
+      "Isso conclui nossa entrevista. Obrigado por dividir suas experiencias conosco
+      Entreremos em contato caso voce avance para as proximas etapas do processo de seleção.
+      Tenha um ótimo dia!"
+    
+    transition_to_questions: >
+      "Agora eu gostaria de saber um pouco mais sobre seu background e como voce se encaixaria no nosso time"
+
+  # Assessment criteria for scoring
+  assessment_criteria:
+    cultural_fit:
+      - team_collaboration
+      - communication_style
+      - adaptability
+      - conflict_resolution
+      - work_environment_preferences
+      - values_alignment
+    
+    engagement:
+      - intrinsic_motivation
+      - initiative_taking
+      - continuous_learning
+      - goal_orientation
+      - resilience
+      - genuine_interest
+
+# Question categories with structured approach
+questions:
+  
+  # Warm-up questions to put candidate at ease
+  warm_up:
+    - question: "Fale me sobre voce o sobre o que te atrai para esta posição."
+      purpose: "ice_breaker"
+      follow_up_prompts:
+        - "qual atividade mais te empolga?"
+        - "como você descobriu sobre a vaga?"
+      
+    - question: "o que você sabe sobre a cultura da empresa e o que mais te atrai?"
+      purpose: "cultural_awareness"
+      follow_up_prompts:
+        - "quais valores se encaixam com os seus?"
+        - "como você se vê contribuindo para esta cultura?"
+
+  # Core cultural fit questions
+  cultural_fit:
+    - question: "descreva como você resolveu um desafio em equipe e qual foi sua contribuição."
+      purpose: "teamwork_assessment"
+      key_indicators:
+        - collaboration_approach
+        - role_in_team_dynamics
+        - problem_solving_contribution
+      follow_up_prompts:
+        - "qual foi seu exato papel na resolução do problema?"
+        - "como voce gerenciou divergencias na equipe?"
+        - "o que voce faria de diferente se encontrasse a mesma situação novamente?"
+    
+    - question: "conte me uma vez em que recebeu um feedback contrutivo?"
+      purpose: "feedback_receptivity"
+      key_indicators:
+        - openness_to_feedback
+        - growth_mindset
+        - implementation_of_changes
+      follow_up_prompts:
+        - "me de um exemplo de como voce aplicou este feedback?"
+        - "como voce tipicamente procura por feedback na empresa?"
+    
+    - question: "descreva uma vez que voce nao concordou com um colega ou superior na empresa. me cote como voce lidou com isso?"
+      purpose: "conflict_resolution"
+      key_indicators:
+        - communication_during_conflict
+        - respect_for_different_perspectives
+        - problem_solving_approach
+      follow_up_prompts:
+        - "qual o resultado da situação?"
+        - "o que voce aprendeu com a experiencia?"
+    
+    - question: "que tipo de ambiente te ajuda a performar melhor?"
+      purpose: "environment_fit"
+      key_indicators:
+        - work_style_preferences
+        - environmental_needs
+        - cultural_alignment
+      follow_up_prompts:
+        - "como voce se adapta se o ambiente nao é o ideal?"
+        - "quais elementos sao essenciais para voce?"
+    
+    - question: "conte me uma vez em que voce teve que se adaptar a uma mudança na empresa que voce trabalho?"
+      purpose: "adaptability_assessment"
+      key_indicators:
+        - change_management
+        - flexibility
+        - resilience
+      follow_up_prompts:
+        - "quais estrategias voce usou para se adaptar as mudanças?"
+        - "como voce ajudou os outros a se adaptar melhor?"
+
+  # Engagement and motivation questions
+  engagement:
+    - question: "o que te movita no trabalho e como voce se mantem motivado em projetos dificeis?"
+      purpose: "intrinsic_motivation"
+      key_indicators:
+        - internal_drive
+        - persistence
+        - passion_for_work
+      follow_up_prompts:
+        - "poderia me dar um exemplo de como voce se manteve engajado em um projeto dificil?"
+        - "o que voce faz quando sente que seua motivação está?"
+    
+    - question: "conte me uma vez que voce ter que ir alem das suas atribuições no trabalho. o que te levou a isso?"
+      purpose: "initiative_assessment"
+      key_indicators:
+        - proactive_behavior
+        - ownership_mentality
+        - extra_effort_drivers
+      follow_up_prompts:
+        - "como o esforço extra impactou o resultado?"
+        - "qual reconhecimento ou feedback voce recebeu?"
+    
+    - question: "como voce se mantem atualizado na sua area?"
+      purpose: "continuous_learning"
+      key_indicators:
+        - learning_commitment
+        - professional_development
+        - industry_awareness
+      follow_up_prompts:
+        - "qual foi a coisa mais importante que voce aprendeu recentemente?"
+        - "como voce aplica este conhecimento no seu trabalho?"
+    
+    - question: "descreva um projeto que voce se engajou. o que te atraiu neste projeto?"
+      purpose: "engagement_drivers"
+      key_indicators:
+        - work_preferences
+        - engagement_factors
+        - intrinsic_interests
+      follow_up_prompts:
+        - "quais aspectos te mantem engajado duranto o processo?"
+        - "como voce contribuiu para o sucesso do projeto?"
+    
+    - question: "como voce gerencia atividade que nao te iteressam imediatamente?"
+      purpose: "adaptability_to_tasks"
+      key_indicators:
+        - attitude_toward_routine_work
+        - finding_purpose_in_tasks
+        - professional_maturity
+      follow_up_prompts:
+        - "pode me dar um exemplo?"
+        - "quais estrategias voce usa para se manter motivado?"
+
+  # Closing questions
+  wrap_up:
+    - question: "quais sao seus objetivos de longo prazo e como esta posição se encaixa nisso?"
+      purpose: "career_alignment"
+      key_indicators:
+        - career_planning
+        - role_fit
+        - commitment_likelihood
+      follow_up_prompts:
+        - "quais skills voce espera desenvolver neste papel?"
+        - "onde voce se ve entre 3 e 5 anos?"
+    
+    - question: "quais questoes voce tem sobre nosso time, empresa e cultura?"
+      purpose: "candidate_engagement"
+      key_indicators:
+        - preparation_level
+        - genuine_interest
+        - thoughtful_questions
+      follow_up_prompts:
+        - "tem alguma preocupação em relação ao cargo?"
+        - "o que sucesso siginifica para voce neste cargo?"
+    
+    - question: "tem algo que voce queira que saibamos sobre voce que nao foi perguntado?"
+      purpose: "final_opportunity"
+      key_indicators:
+        - additional_relevant_information
+        - self_advocacy
+        - completeness_of_presentation
+
+# Scoring guidelines for each question type
+scoring:
+  cultural_fit:
+    excellent: "Demonstrates strong alignment with company values, excellent teamwork skills, and adaptability"
+    good: "Shows good cultural fit with minor areas for development"
+    concerns: "Some misalignment with company culture or concerning responses"
+  
+  engagement:
+    excellent: "Highly motivated, proactive, and genuinely interested in the role and company"
+    good: "Generally engaged with some areas of strong interest"
+    concerns: "Limited engagement or concerning lack of motivation"

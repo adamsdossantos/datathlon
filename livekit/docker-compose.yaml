@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --config /livekit.yaml --dev
+    ports:
+      - "7880:7880" # WebSocket signaling
+      - "7881:7881" # WebRTC over TCP (fallback)
+      - "3478:3478/udp" # TURN/STUN for NAT traversal
+      - "64999-65535:64999-65535/udp" # WebRTC over UDP (primary)
+    volumes:
+      - ./livekit.yaml:/livekit.yaml
+    restart: unless-stopped
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped

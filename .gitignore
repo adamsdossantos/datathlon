@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+.env
+main_test.py
+README.TXT
+Datathon - Machine Learning Engineering.pdf
+testes.ipynb
+.config
+3_entrevista.py 
+.dockerignore
+Datathon
+**mlruns/
+data/
+**notebook/mlruns/
+**notebook/mlruns/

@@ -1,0 +1,19 @@
+# livekit.yaml
+port: 7880
+
+keys:
+  devkey: 
+    secret:KZ6XhYuzDVfbvXcVUpj6tNSJ4GfkqSgEyyA03VHkuZi # Development API key and secret. DO NOT USE IN PRODUCTION.
+
+
+redis:
+  address: redis:6379 # Connects to the Redis service defined in docker-compose.yaml
+
+rtc:
+  udp_port: 64999-65535
+  tcp_port: 7881
+
+# Optional: Enable speaker detection for better audio experience
+audio:
+  active_speaker_detector:
+    enabled: true
