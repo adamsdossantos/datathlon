@@ -1,6 +1,6 @@
 # Datathlon Projeto de Sistema de Recomendação Inteligente (ATS)
 
-## **Estrutura Tecnologias** 
+## **Estrutura Tecnologica** 
 - FastAPI
 - Streamlit
 - MLflow
@@ -180,6 +180,7 @@ Esta seção descreve o processo para implantar a API e outros componentes no GK
 
 3.  **Crie o Secret para o Token Databricks no GKE:**
     ```bash
+    kubectl create secret generic databricks-api-token --from-literal=token=**************
     ```
 
 4.  **Crie o Manifesto `api-deployment.yaml`:**
