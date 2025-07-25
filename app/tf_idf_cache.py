@@ -1,13 +1,35 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import time
+import pickle
 from datetime import datetime
 from threading import Thread
-from .collections_mongo import corpus_applicants, corpus_vagas
+from app.collections_mongo import corpus_applicants, corpus_vagas
+from dotenv import load_dotenv
+
 import mlflow
 
 
-#mlflow.set_tracking_uri("http://mlflow:5000")
-mlflow.set_tracking_uri(os.getenv("DATABRICKS_HOST"))
-vectorizer = mlflow.sklearn.load_model("models:/TFIDFVectorizer/Production")
+# === Load environment variables from .env ===
+load_dotenv()
+os.environ["DATABRICKS_HOST"] = os.getenv("DATABRICKS_HOST")
+os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_TOKEN")
+print("TOKEN:", os.getenv("DATABRICKS_TOKEN"))
+print("HOST:", os.getenv("DATABRICKS_HOST"))
+
+mlflow.set_tracking_uri("databricks")
+mlflow.set_registry_uri("databricks-uc")
+#vectorizer = mlflow.sklearn.load_model("models:/workspace.default.tfidfvectorizer@champion")
+
+path_to_vectorizer = os.path.join("app", "vectorizer.pkl")
+with open(path_to_vectorizer, "rb") as f:
+   vectorizer = pickle.load(f)
+
+# with open("app/vectorizer.pkl", "rb") as f:
+#     vectorizer_new = pickle.load(f)
+
 
 # GLOBAL CACHE OBJECTS
 cache_applicants = {

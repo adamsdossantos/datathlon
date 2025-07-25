@@ -3,13 +3,20 @@ import pickle
 import mlflow
 import mlflow.pyfunc
 from sentence_transformers import SentenceTransformer
+from mlflow.models.signature import infer_signature
 from dotenv import load_dotenv
+
+model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
+model.save("models/distiluse-base-multilingual-cased-v1")
 
 # Load environment variables from .env
 load_dotenv()
 
 # Set MLflow Tracking URI and authentication
-mlflow.set_tracking_uri(os.getenv("DATABRICKS_HOST"))
+mlflow.set_tracking_uri("databricks")
+mlflow.set_registry_uri("databricks-uc")     # For Unity Catalog model registry
+
+
 os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_TOKEN")
 
 # Set experiment in Databricks
@@ -20,12 +27,20 @@ mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_PATH"))
 with open("app/vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
+# Create sample data for signature inference
+sample_texts = ["Sample job description with skills and requirements", "Another sample text for vectorization"]
+sample_output = vectorizer.transform(sample_texts)
+
+# Infer signature for TF-IDF vectorizer
+tfidf_signature = infer_signature(sample_texts, sample_output)
+
 with mlflow.start_run(run_name="Register TFIDF Vectorizer") as run:
     mlflow.log_param("model_type", "TF-IDF")
     mlflow.sklearn.log_model(
         sk_model=vectorizer,
-        artifact_path="tfidf_vectorizer",
-        registered_model_name="TFIDFVectorizer"
+        name="tfidf_vectorizer",
+        signature=tfidf_signature,
+        registered_model_name="workspace.default.TFIDFVectorizer"
     )
     mlflow.log_artifact("app/vectorizer.pkl", artifact_path="original_pickle")
 
@@ -33,62 +48,44 @@ with mlflow.start_run(run_name="Register TFIDF Vectorizer") as run:
 ### 2. Register SentenceTransformer with Custom Wrapper ###
 class SentenceTransformerWrapper(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
-        from sentence_transformers import SentenceTransformer
-        self.model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
+        self.model = SentenceTransformer(context.artifacts["model_path"])
 
     def predict(self, context, model_input):
-        return self.model.encode(model_input)
+        # Handle both single strings and lists of strings
+        if isinstance(model_input, str):
+            return self.model.encode([model_input])
+        elif hasattr(model_input, 'iloc'):  # pandas DataFrame/Series
+            # Convert pandas input to list of strings
+            texts = model_input.iloc[:, 0].tolist() if len(model_input.shape) > 1 else model_input.tolist()
+            return self.model.encode(texts)
+        else:
+            # Assume it's already a list-like object
+            return self.model.encode(list(model_input))
+
+# Create sample data for signature inference
+sample_input = ["Sample text for embedding", "Another sample for sentence transformer"]
+wrapper_model = SentenceTransformerWrapper()
+
+# Load the model context manually for signature inference
+class MockContext:
+    pass
+
+wrapper_model.load_context(MockContext())
+sample_embeddings = wrapper_model.predict(None, sample_input)
+
+# Infer signature for SentenceTransformer
+st_signature = infer_signature(sample_input, sample_embeddings)
 
 with mlflow.start_run(run_name="Register SentenceTransformer Model") as run:
     mlflow.log_param("model_type", "SentenceTransformer")
     mlflow.log_param("model_name", "distiluse-base-multilingual-cased-v1")
     
     mlflow.pyfunc.log_model(
-        artifact_path="sentence_transformer",
+        name="sentence_transformer",
         python_model=SentenceTransformerWrapper(),
-        registered_model_name="SentenceTransformerModel"
+        signature=st_signature,
+        registered_model_name="workspace.default.SentenceTransformerModel"
     )
 
 
 
-
-# # register_models.py
-# import mlflow
-# import pickle
-# from sentence_transformers import SentenceTransformer
-# from dotenv import load_dotenv
-# import mlflow.pyfunc
-# import os
-
-# load_dotenv()
-
-# mlflow.set_tracking_uri(os.getenv("DATABRICKS_HOST"))
-
-# os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_TOKEN")
-
-
-# # Load your models
-# with open("app/vectorizer.pkl", "rb") as f:
-#     vectorizer = pickle.load(f)
-
-# model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
-
-# # Create experiment (optional)
-# mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_PATH"))
-
-# with mlflow.start_run(run_name="Registro dos Modelos TFIDF and SentenceTransformer") as run:
-#     # Log and register TF-IDF
-#     run_id_tfidf = mlflow.sklearn.log_model(
-#         sk_model=vectorizer,
-#         artifact_path="tfidf_vectorizer",
-#         registered_model_name="TFIDFVectorizer"
-#     ).run_id
-
-#     # Log and register SentenceTransformer
-#     run_id_sentence = mlflow.sentence_transformers.log_model(
-#         model=model,
-#         artifact_path="sentence_transformer",
-#         registered_model_name="SentenceTransformerModel"
-#     ).run_id
-
-    

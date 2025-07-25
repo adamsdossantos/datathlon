@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+import os
 
 st.title("Candidatos")
 
@@ -11,7 +12,10 @@ if st.button("Gerar Vagas"):
     payload = {"applicant_id": applicant_id, 
                "top_n": top_n
                }
-    response = requests.post("http://localhost:8000/match/applicants", json=payload)
+    api_url = os.getenv("API_URL", "http://localhost:8000")  # fallback para desenvolvimento local
+    response = requests.post(f"{api_url}/match/applicants", json=payload)
+
+    response = requests.post("http://api:8000/match/applicants", json=payload)
 
     if response.ok:
         data = response.json()

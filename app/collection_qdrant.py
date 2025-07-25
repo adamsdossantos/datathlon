@@ -1,5 +1,4 @@
+import os
 from qdrant_client import QdrantClient
 
-#criando cliente Qdrant
-qdrant = QdrantClient("http://localhost:6333")
-
+qdrant = QdrantClient(f"http://{os.getenv('QDRANT_HOST', 'localhost')}:{os.getenv('QDRANT_PORT', '6333')}")

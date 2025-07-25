@@ -258,6 +258,10 @@ Você pode popular os bancos de dados MongoDB e Qdrant usando Pods temporários 
 ## **Acesso à API Pública**
 Acesse: http://34.151.203.159/
 
+## **Acesso ao Streamlit UX**
+
+Acesse: http://35.247.219.103/
+
 ## **Video Explicativo no Youtube**
 
 https://youtu.be/-q2fPxk_mrE

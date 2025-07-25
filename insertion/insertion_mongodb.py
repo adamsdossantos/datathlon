@@ -1,12 +1,12 @@
 from pymongo import MongoClient
 import json
 
-data_appplicants ='/app/data/applicants.json' 
-data_prospects = '/app/data/prospects.json'
-data_vagas = '/app/data/vagas.json'
+data_appplicants ='./data/applicants.json' 
+data_prospects = './data/prospects.json'
+data_vagas = './data/vagas.json'
 
 #criando client MongoDB
-client = MongoClient("mongodb://root:root@mongo:27017")
+client = MongoClient("mongodb://root:22410Ad4m5@localhost:27017/?authSource=admin")
 
 # creating a database MongoDB
 decision_db = client['decision_db']

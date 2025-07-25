@@ -5,8 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import mlflow
 import traceback
 import time
-import pickle
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from app.collections_mongo import collection_applicants, collection_vagas
 from app.collection_qdrant import qdrant
@@ -15,14 +13,11 @@ from databricks.sdk import WorkspaceClient
 
 from dotenv import load_dotenv
 
-path_to_vectorizer = os.path.join("models", "tfidf_vectorizer.pkl")
-with open(path_to_vectorizer, "rb") as f:
-   vectorizer_new = pickle.load(f)
 
-#with open("app/vectorizer.pkl", "rb") as f:
+# with open("app\\vectorizer.pkl", "rb") as f:
 #     vectorizer_new = pickle.load(f)
 
-model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
+# model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
 
 # === Load environment variables from .env ===
 load_dotenv()
@@ -40,8 +35,8 @@ mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_PATH", "/Users/contact.adams.
 # Add a small delay to ensure authentication is fully established
 time.sleep(5)
 
-#vectorizer_new = mlflow.sklearn.load_model("models:/workspace.default.tfidfvectorizer@champion")
-#model = mlflow.pyfunc.load_model("models:/workspace.default.sentencetransformermodel@champion")
+vectorizer_new = mlflow.sklearn.load_model("models:/workspace.default.tfidfvectorizer@champion")
+model = mlflow.pyfunc.load_model("models:/workspace.default.sentencetransformermodel@champion")
 
 
 def vagas_match(job_id:str, model:object=model, vectorizer:object = vectorizer_new, alpha:float=0.3, top_n:int=5, version:str="1.0"):
@@ -95,7 +90,7 @@ def vagas_match(job_id:str, model:object=model, vectorizer:object = vectorizer_n
         }
 
         # vectorização do corpus para sentence transformer + Qdrant
-        qdrant_vector_job = model.encode(job_text)
+        qdrant_vector_job = model.predict([job_text])[0].tolist()
         results = qdrant.query_points(collection_name="applicants", query=qdrant_vector_job, limit=100)
 
         # normalizando os scores
@@ -219,7 +214,7 @@ def applicants_match(applicant_id:str, model:object=model, vectorizer:object=vec
         }
 
         # vectorização do corpus para sentence transformer + Qdrant
-        qdrant_vector_applicant = model.encode(applicant_text)
+        qdrant_vector_applicant = model.predict([applicant_text])[0].tolist()
         results = qdrant.query_points(collection_name="vagas", query=qdrant_vector_applicant, limit=100)
 
         # normalizando os scores
@@ -302,7 +297,3 @@ def applicants_match(applicant_id:str, model:object=model, vectorizer:object=vec
             mlflow.set_tag("error_message", str(e))
             mlflow.set_tag("error_traceback", traceback.format_exc())
         raise e
-
-# if __name__ == "__main__":
-#     vagas_match, applicants_match = vagas_match, applicants_match
-#     start_background_refresh()

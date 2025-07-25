@@ -1,9 +1,17 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from datetime import datetime, timezone
+
 from fastapi import FastAPI
 from app.matching_functions import vagas_match, applicants_match
 from api.utils import MatchRequestJob, MatchRequestApplicant
 from app.tf_idf_cache import start_background_refresh
 from insertion.insertion_qdrand import start_qdrant_background_sync
 from contextlib import asynccontextmanager
+
+
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -55,4 +63,4 @@ def health_check():
     """
     Endpoint para verificar a saúde da aplicação.
     """
-    return {"status": "ok"}
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc)}

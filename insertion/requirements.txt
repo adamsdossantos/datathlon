@@ -1,0 +1,8 @@
+pymongo
+qdrant-client
+sentence-transformers
+uvicorn 
+fastapi
+pymongo
+qdrant-client
+sentence-transformers

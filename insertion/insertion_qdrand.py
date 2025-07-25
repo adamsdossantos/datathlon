@@ -1,16 +1,70 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import time
 from threading import Thread
-from app.collection_qdrant import qdrant
 from sentence_transformers import SentenceTransformer
 from app.collections_mongo import collection_applicants, collection_vagas
 from qdrant_client.http.models import PointStruct
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, VectorParams
+from qdrant_client.http.exceptions import UnexpectedResponse 
+
 
 model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
+
+qdrant = QdrantClient(f"http://{os.getenv('QDRANT_HOST', 'localhost')}:{os.getenv('QDRANT_PORT', '6333')}")
+#qdrant = QdrantClient(host="localhost", port=6333)
+
+#qdrant.create_collection(collection_name="applicants", vectors_config=VectorParams(size=512, distance=Distance.COSINE))
+#qdrant.create_collection(collection_name="vagas", vectors_config=VectorParams(size=512, distance=Distance.COSINE))
+
+# def create_or_recreate_collection(collection_name: str, vector_size: int, distance_metric: Distance = Distance.COSINE):
+#     print(f"Verificando coleção: {collection_name}")
+#     try:
+#         # Tenta deletar a coleção se ela já existir para garantir um estado limpo
+#         if qdrant.collection_exists(collection_name=collection_name):
+#             print(f"Coleção '{collection_name}' já existe. Deletando para recriar.")
+#             qdrant.delete_collection(collection_name=collection_name)
+#             # Pode ser necessário um pequeno delay para a coleção ser completamente deletada
+#             time.sleep(2) # Ajuste conforme necessário
+#     except UnexpectedResponse as e:
+#         # Se houver um 404 (Not Found) ao tentar deletar uma coleção que não existe, está ok
+#         # Ou se houver um 409 (Conflict) que signifique que ela já está em processo de exclusão
+#         if e.status_code == 404:
+#             print(f"Coleção '{collection_name}' não encontrada para deletar, continuando.")
+#         elif e.status_code == 409:
+#             print(f"Conflito ao tentar deletar '{collection_name}'. Pode estar em transição. Aguarde e tente novamente, ou verifique manualmente.")
+#             # Se persistir, pode ser necessário verificar manualmente no console Qdrant
+#             time.sleep(5) # Espere mais um pouco se houver conflito
+#         else:
+#             raise e # Relança outros erros inesperados
+
+#     # Cria a coleção
+#     qdrant.recreate_collection(
+#         collection_name=collection_name,
+#         vectors_config=VectorParams(size=vector_size, distance=distance_metric),
+#     )
+#     print(f"Coleção '{collection_name}' criada/recriada com sucesso.")
+
+# Determine o tamanho do vetor do seu modelo
+# Execute isso uma vez para obter o tamanho correto do embedding
+# Lembre-se que o tamanho deve ser consistente com o modelo.encode()
+# model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
+# sample_vector_size = model.get_sentence_embedding_dimension() # Ou um valor fixo se souber (ex: 768 para distiluse-base)
+
+# # Função de inicialização que você chamará antes de popular
+# def initialize_qdrant_collections():
+#     create_or_recreate_collection("applicants", sample_vector_size)
+#     create_or_recreate_collection("vagas", sample_vector_size)
+
 
 BATCH_SIZE = 200
 
 
 def qdrand_applicants():
+    print('começando inserção na nuvem dos aplicantes')
     batch = []
     count = 0    
     for doc in collection_applicants.find({}, {
@@ -55,7 +109,8 @@ def qdrand_applicants():
     print(f" Total de {count} aplicantes carregadas no Qdrant")
 
 
-def qdrand_vagas(): 
+def qdrand_vagas():
+    print('começando inserção na nuvem dos das vagas')
     batch = []
     count = 0         
     for doc in collection_vagas.find({}, {
@@ -133,3 +188,7 @@ def start_qdrant_background_sync(delay=120):
     # Background periodic sync
     Thread(target=background, daemon=True).start()
 
+if __name__ == '__main__':
+    #initialize_qdrant_collections(),# Chame isso antes de qdrand_applicants/vagas
+    qdrand_applicants()
+    qdrand_vagas()

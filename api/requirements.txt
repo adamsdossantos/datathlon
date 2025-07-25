@@ -1,7 +1,12 @@
 fastapi
 uvicorn
 pydantic
-mlflow
 pymongo
 qdrant-client
-sentence-transformers
+mlflow==3.1.1
+pandas==2.3.0
+psutil==7.0.0
+scikit-learn==1.7.0
+sentence-transformers==4.1.0
+databricks-sdk
+python-dotenv

@@ -1,0 +1,77 @@
+# api-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minha-api-deployment
+  labels:
+    app: minha-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minha-api
+  template:
+    metadata:
+      labels:
+        app: minha-api
+    spec:
+      containers:
+      - name: minha-api
+        image: gcr.io/fiap-462820/sua-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        # Variáveis de ambiente para MLflow
+        - name: MLFLOW_TRACKING_URI
+          value: "databricks"
+        - name: DATABRICKS_HOST
+          value: "https://dbc-04ba26d3-c768.cloud.databricks.com/"
+        - name: DATABRICKS_TOKEN # Puxa o token do Secret do Kubernetes
+          valueFrom:
+            secretKeyRef:
+              name: databricks-api-token
+              key: token
+              optional: false
+        # Variável de ambiente para o MongoDB (APENAS MONGO_URI)
+        - name: MONGO_URI # <--- AGORA DEFINIDA AQUI NO DEPLOYMENT
+          value: "mongodb://root:22410Ad4m5@meu-mongodb:27017/?authSource=admin" # ATENÇÃO: SUBSTITUA SUA_SENHA_FORTE
+        # Variável de ambiente para o Qdrant (QDRANT_URL já estava OK)
+        - name: QDRANT_URL
+          value: "http://meu-qdrant:6333"
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minha-api-service
+spec:
+  selector:
+    app: minha-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
