@@ -57,7 +57,7 @@ Certifique-se de ter as seguintes ferramentas instaladas e configuradas:
 * **Google Cloud SDK (`gcloud CLI`):** Para interagir com o Google Cloud e GKE.
 * **`kubectl`:** Ferramenta de linha de comando do Kubernetes.
 * **Helm:** Gerenciador de pacotes Kubernetes (usado para MongoDB e Qdrant no GKE).
-* **`python` e `pip`:** Para gerenciar dependências e executar scripts localmente.
+* **`python`, `uv` e `pip`:** Para gerenciar dependências e executar scripts localmente.
 * **Credenciais Google Cloud:** Uma conta GCP com créditos e permissões adequadas.
 * **Token Databricks:** Para acesso aos modelos MLflow (se aplicável).
 
@@ -66,7 +66,7 @@ Certifique-se de ter as seguintes ferramentas instaladas e configuradas:
 Esta seção descreve como subir todos os serviços localmente usando Docker Compose.
 
 1.  **Configure o Token Databricks (Apenas se a API precisar em runtime local):**
-    * No seu `docker-compose_TEST.yaml`, a variável `DATABRICKS_TOKEN` está exposta diretamente para o ambiente do contêiner. Para produção, considere usar um mecanismo mais seguro.
+    * No seu `docker-compose_TEST.yaml`, a variável `DATABRICKS_TOKEN` que será usada pelo GKE com um secret
 
 2.  **Verifique os Dockerfiles e `requirements.txt`:**
     * `api/Dockerfile`: Verifique se os caminhos `COPY` e o `CMD` estão corretos para a estrutura local.
@@ -184,7 +184,7 @@ Esta seção descreve o processo para implantar a API e outros componentes no GK
     ```
 
 4.  **Crie o Manifesto `api-deployment.yaml`:**
-    * Use o conteúdo completo e corrigido do `api-deployment.yaml` fornecido nas discussões anteriores, incluindo as sondas de saúde e as variáveis de ambiente para MongoDB, Qdrant e MLflow (com o token puxado do Secret).
+    * Use o manifesto `api-deployment.yaml` que as variáveis de ambiente para MongoDB, Qdrant e MLflow (com o token salvo no Secret).
     * **Substitua `SUA_SENHA_FORTE` pela senha real do MongoDB.**
     * **Ajuste `resources` (`requests` e `limits`)** se o Pod da API continuar falhando por falta de memória.
 
