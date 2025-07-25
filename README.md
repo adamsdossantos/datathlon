@@ -180,7 +180,7 @@ Esta seção descreve o processo para implantar a API e outros componentes no GK
 
 3.  **Crie o Secret para o Token Databricks no GKE:**
     ```bash
-    kubectl create secret generic databricks-api-token --from-literal=token=dapi4610191b764477f5f4ab4c4a3b0ff0cd
+    kubectl create secret generic databricks-api-token --from-literal=token=dapi**************
     ```
 
 4.  **Crie o Manifesto `api-deployment.yaml`:**
