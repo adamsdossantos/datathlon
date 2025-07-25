@@ -184,7 +184,7 @@ Esta seção descreve o processo para implantar a API e outros componentes no GK
     ```
 
 4.  **Crie o Manifesto `api-deployment.yaml`:**
-    * Use o manifesto `api-deployment.yaml` que as variáveis de ambiente para MongoDB, Qdrant e MLflow (com o token salvo no Secret).
+    * Use o manifesto `api-deployment.yaml` que as variáveis de ambiente para MongoDB, Qdrant e MLflow (com o token salvo ngo Secret).
     * **Substitua `SUA_SENHA_FORTE` pela senha real do MongoDB.**
     * **Ajuste `resources` (`requests` e `limits`)** se o Pod da API continuar falhando por falta de memória.
 
@@ -260,8 +260,7 @@ Acesse: http://34.151.203.159/
 
 ## **Video Explicativo no Youtube**
 
-https://www.youtube.com/watch?v=
-
+https://youtu.be/-q2fPxk_mrE
 
 ## **Limpeza de Recursos (Importante para Evitar Custos)**
 
