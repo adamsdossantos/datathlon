@@ -9,15 +9,14 @@ services:
       - mongo
       - qdrant
     environment:
-      # MONGO_URI: O nome do serviço é 'mongo', não 'localhost' ou um IP
       - MONGO_URI=mongodb://root:root@mongo:27017
       # QDRANT_HOST: O nome do serviço é 'qdrant'
       - QDRANT_HOST=qdrant
-      - QDRANT_PORT=6333 # Qdrant client pode precisar da porta separada do host
+      - QDRANT_PORT=6333
       # MLflow
       - MLFLOW_TRACKING_URI=databricks
       - DATABRICKS_HOST=https://dbc-04ba26d3-c768.cloud.databricks.com/
-      - DATABRICKS_TOKEN=dapi4610191b764477f5f4ab4c4a3b0ff0cd # Token aqui, mas atenção à segurança em produção
+      - DATABRICKS_TOKEN=**********************
       - MLFLOW_REGISTRY_URI=databricks-uc
 
   streamlit:
@@ -29,8 +28,6 @@ services:
     depends_on:
       - api
     environment:
-      # API_BASE_URL: O Streamlit precisa acessar a API pelo nome do serviço 'api'
-      # Se o Streamlit acessa a API, use o nome do serviço 'api' dentro da rede Docker
       - API_BASE_URL=http://api:8000 # O Streamlit acessa a API usando o nome do serviço 'api'
 
   mongo:

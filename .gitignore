@@ -67,4 +67,4 @@ livekit/livekit_test.ipynb
 livekit/livekit_yaml 
 docker-compose_DEV.yaml  
 register_model.py 
-temp_registry_dockerfile
+ddtemp_registry_dockerfile
