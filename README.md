@@ -1,4 +1,4 @@
-# Sistema de Recomendação Inteligente (ATS) - Datathlon
+# Sistema de Recomendação Inteligente (ATS) - Datathon
 
 ## Tecnologias Utilizadas
 - FastAPI  
@@ -117,6 +117,12 @@ kubectl port-forward svc/SEU-MONGO 27017:27017
 ````
 kubectl port-forward svc/SEU-QDRANT 6333:6333
 ````
+- Insira os dados.
+````
+python insertion/insert_mongodb.py
+python insertion/insert_qdrand.py
+````
+
 
 5. Deploy do Streamlit
 ````bash
@@ -136,7 +142,7 @@ kubectl apply -f streamlit_app/streamlit-deployment.yaml
 
 ## Limpeza de Recursos
 ```bash
-gcloud container clusters delete meu-cluster --zone southamerica-east1-b
+gcloud container clusters delete MEU-CLIUSTER --zone southamerica-east1-b
 
 gcloud container images delete gcr.io/SEU_PROJETO/sua-api:latest
 
