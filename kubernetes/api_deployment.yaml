@@ -37,8 +37,10 @@ spec:
         - name: MONGO_URI # <--- AGORA DEFINIDA AQUI NO DEPLOYMENT
           value: "mongodb://root:22410Ad4m5@meu-mongodb:27017/?authSource=admin" # ATENÇÃO: SUBSTITUA SUA_SENHA_FORTE
         # Variável de ambiente para o Qdrant (QDRANT_URL já estava OK)
-        - name: QDRANT_URL
-          value: "http://meu-qdrant:6333"
+        - name: QDRANT_HOST
+          value: "meu-qdrant"
+        - name: QDRANT_PORT
+          value: "6333"
         resources:
           requests:
             memory: "3Gi"

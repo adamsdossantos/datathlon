@@ -9,7 +9,9 @@ from app.collections_mongo import collection_applicants, collection_vagas
 from qdrant_client.http.models import PointStruct
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
-from qdrant_client.http.exceptions import UnexpectedResponse 
+from qdrant_client.http.exceptions import UnexpectedResponse
+from qdrant_client.http.exceptions import ResponseHandlingException
+
 
 
 model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
@@ -64,7 +66,6 @@ BATCH_SIZE = 200
 
 
 def qdrand_applicants():
-    print('começando inserção na nuvem dos aplicantes')
     batch = []
     count = 0    
     for doc in collection_applicants.find({}, {
@@ -100,8 +101,18 @@ def qdrand_applicants():
         count += 1
 
         if len(batch) == BATCH_SIZE:
-            qdrant.upsert(collection_name="applicants", points=batch)
+            # qdrant.upsert(collection_name="applicants", points=batch) comentado evitando a inserção infinita            
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    qdrant.upsert(collection_name="applicants", points=batch)
+                    break
+                except ResponseHandlingException:
+                    if attempt == max_retries - 1:
+                        raise
+                time.sleep(2)
             batch = []
+
             
     if batch:
         qdrant.upsert(collection_name='applicants', points=batch)
@@ -110,7 +121,6 @@ def qdrand_applicants():
 
 
 def qdrand_vagas():
-    print('começando inserção na nuvem dos das vagas')
     batch = []
     count = 0         
     for doc in collection_vagas.find({}, {
@@ -158,7 +168,16 @@ def qdrand_vagas():
         count += 1
 
         if len(batch) == BATCH_SIZE:
-            qdrant.upsert(collection_name="vagas", points=batch)
+            # qdrant.upsert(collection_name="vagas", points=batch) comentado evitando a inserção infinita            
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    qdrant.upsert(collection_name="vagas", points=batch)
+                    break
+                except ResponseHandlingException:
+                    if attempt == max_retries - 1:
+                        raise
+                time.sleep(2)
             batch = []
             
     if batch:

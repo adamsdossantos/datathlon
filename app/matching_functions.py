@@ -11,7 +11,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from app.collections_mongo import collection_applicants, collection_vagas
 from app.collection_qdrant import qdrant
 from app.tf_idf_cache import cache_applicants, cache_vagas
-from databricks.sdk import WorkspaceClient
+from qdrant_client.http.exceptions import ResponseHandlingException
+
 
 from dotenv import load_dotenv
 
@@ -42,6 +43,17 @@ time.sleep(5)
 
 #vectorizer_new = mlflow.sklearn.load_model("models:/workspace.default.tfidfvectorizer@champion")
 #model = mlflow.pyfunc.load_model("models:/workspace.default.sentencetransformermodel@champion")
+
+def qdrant_retry_wrapper(func, *args, **kwargs):
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            return func(*args, **kwargs)
+        except ResponseHandlingException as e:
+            if attempt == max_retries - 1:
+                raise e
+            wait_time = 2 ** attempt
+            time.sleep(wait_time)
 
 
 def vagas_match(job_id:str, model:object=model, vectorizer:object = vectorizer_new, alpha:float=0.3, top_n:int=5, version:str="1.0"):
@@ -96,7 +108,15 @@ def vagas_match(job_id:str, model:object=model, vectorizer:object = vectorizer_n
 
         # vectorização do corpus para sentence transformer + Qdrant
         qdrant_vector_job = model.encode(job_text)
-        results = qdrant.query_points(collection_name="applicants", query=qdrant_vector_job, limit=100)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                results = qdrant_retry_wrapper(qdrant.query_points, collection_name="applicants", query=qdrant_vector_job, limit=20)
+                break
+            except ResponseHandlingException:
+                if attempt == max_retries - 1:
+                    raise
+                time.sleep(1)
 
         # normalizando os scores
         tfidf_max = max(tfidf_scores.values()) if tfidf_scores else 1
@@ -220,7 +240,15 @@ def applicants_match(applicant_id:str, model:object=model, vectorizer:object=vec
 
         # vectorização do corpus para sentence transformer + Qdrant
         qdrant_vector_applicant = model.encode(applicant_text)
-        results = qdrant.query_points(collection_name="vagas", query=qdrant_vector_applicant, limit=100)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                results = qdrant_retry_wrapper(qdrant.query_points, collection_name="vagas", query=qdrant_vector_applicant, limit=20)
+                break
+            except ResponseHandlingException:
+                if attempt == max_retries - 1:
+                    raise
+                time.sleep(1)
 
         # normalizando os scores
         tfidf_max = max(tfidf_scores.values()) if tfidf_scores else 1

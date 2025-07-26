@@ -7,13 +7,7 @@ st.set_page_config(
     page_title="Vagas App",
     layout="centered",
     initial_sidebar_state='expanded',
-    menu_items={
-        'About': "# This is a header. This is an *extremely* cool app!",
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        }       
 )
-
 
 st.title("Vagas")
 

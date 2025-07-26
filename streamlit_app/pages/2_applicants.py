@@ -3,6 +3,12 @@ import requests
 import pandas as pd
 import os
 
+st.set_page_config(
+    page_title="Applicants App",
+    layout="centered",
+    initial_sidebar_state='expanded',
+)
+
 st.title("Candidatos")
 
 applicant_id = st.text_input("Candidato ID")
@@ -14,8 +20,6 @@ if st.button("Gerar Vagas"):
                }
     api_url = os.getenv("API_URL", "http://localhost:8000")  # fallback para desenvolvimento local
     response = requests.post(f"{api_url}/match/applicants", json=payload)
-
-    response = requests.post("http://api:8000/match/applicants", json=payload)
 
     if response.ok:
         data = response.json()
