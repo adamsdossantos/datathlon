@@ -34,15 +34,37 @@ testes.ipynb
 /Dockerfile_ANTIGO
 /READ.ME.txt
 /register_model.py 
+
 /temp_registry_dockerfile
-/docker-compose_DEV.yaml
-/docker-compose_PROD.yaml
+
+
+## arquivos do livekit
 /livekit/agent_AsCt.py
 /livekit/agent_google.py
 /livekit/docker-compose-yaml
 /livekit/livekit_test.ipynb 
 /models/
-/docker-compose_DEV
 
 
 
+# Arquivos Docker Compose
+docker-compose_DEV.yaml
+docker-compose_PROD.yaml
+
+# Arquivos de configuração e projeto
+register_model.py
+temp_registry_dockerfile
+
+
+api/desktop.ini 
+app/NOVO.py 
+app/tTEEEEEsteeee.ipynb 
+app/VARIABLES.py 
+livekit/agent_AsCt.py 
+livekit/agent_google.py 
+livekit/docker-compose.yaml 
+livekit/livekit_test.ipynb 
+livekit/livekit_yaml 
+docker-compose_DEV.yaml  
+register_model.py 
+temp_registry_dockerfile
